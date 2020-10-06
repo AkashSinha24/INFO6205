@@ -1,18 +1,24 @@
 /**
  * Original code:
- * Copyright © 2000–2017, Robert Sedgewick and Kevin Wayne.
+ * Copyright ©️ 2000–2017, Robert Sedgewick and Kevin Wayne.
  * <p>
  * Modifications:
  * Copyright (c) 2017. Phasmid Software
  */
 package edu.neu.coe.info6205.union_find;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Random;
+import java.util.Scanner;
 
 /**
  * Height-weighted Quick Union with Path Compression
  */
 public class UF_HWQUPC implements UF {
+	
+	 private static final Random random = new Random();
     /**
      * Ensure that site p is connected to site q,
      *
@@ -79,9 +85,15 @@ public class UF_HWQUPC implements UF {
      * @throws IllegalArgumentException unless {@code 0 <= p < n}
      */
     public int find(int p) {
-        validate(p);
+    	validate(p);
         int root = p;
-        // TO BE IMPLEMENTED
+        while (root != parent[root]) {
+            root = parent[root];
+        }
+        if (!pathCompression) {
+            return root;
+        }
+        doPathCompression(p, root, parent);
         return root;
     }
 
@@ -169,6 +181,15 @@ public class UF_HWQUPC implements UF {
 
     private void mergeComponents(int i, int j) {
         // TO BE IMPLEMENTED make shorter root point to taller one
+    	System.out.println("before merge - "+ this.toString());
+    	if (height[i] < height[j]) {
+    		parent[i] = j;
+            height[j] += height[i];
+        } else {
+        	parent[j] = i;
+            height[i] += height[j];
+        }
+    	System.out.println("After merge - "+ this.toString());
     }
 
     /**
@@ -176,5 +197,70 @@ public class UF_HWQUPC implements UF {
      */
     private void doPathCompression(int i) {
         // TO BE IMPLEMENTED update parent to value of grandparent
+    	int root = find(i);
+    	
+    	while (i != root) {
+            int temp = parent[i];
+            parent[i] = root;
+            i = temp;
+        }
     }
+    
+    static void doPathCompression(int p, int root, int[] parent) {
+        // TODO update parent if appropriate
+        //throw new RuntimeException("not implemented");
+
+        while (p != root) {
+            int newp = parent[p];
+            parent[p] = root;
+            p = newp;
+        }
+    }
+    
+    public static void main(String args[]) {
+
+    	try {
+			FileWriter writer = new FileWriter("resultsAssignment3/union_find/assignment3.csv");
+			writer.write("n,pairs\n");
+
+			for(int i=0;i<8;i++) {
+				System.out.println(i);
+				int t = (int)Math.pow(2, i);
+				t = t*5;
+				writer.write(t+",");
+				writer.write(count(t,2000)+"\n");
+			}
+			writer.close();
+    	}
+    	catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    private static int[] randomPair(int n) {
+		int[] ans = new int[2];
+		
+		ans[0] = (int)(Math.random()*n);
+		ans[1] = (int)(Math.random()*n);
+		//if(ans[0]==ans[1]) ans = randomPair(n);
+		return ans;
+	}
+	
+	private static int count(int n, int runs) {
+		int size = n;
+		double av = 0;
+		for(int i=0;i<runs;i++) {
+			UF h = new UF_HWQUPC(size, true);
+			int pairs=0;
+			while(h.components()>1) {
+				int[] temp = randomPair(size);
+				h.connect(temp[0], temp[1]);
+				System.out.println(temp[0]+" "+temp[1]+" "+pairs+" "+h.components());
+				pairs++;
+			}
+			av+= pairs;
+			System.out.println("Average : : "+av);
+		}
+		return (int)(av/runs);
+	}
 }
