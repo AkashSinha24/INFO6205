@@ -88,7 +88,7 @@ public class Assgn4 {
 
     	try {
 			FileWriter writer = new FileWriter("resultsAssignment4/union_find/assignment4.csv");
-			writer.write("n,uncompressed_time,uncompressed_av_depth,uncompressed_pairs, path_halved_time,path_halved_av_depth,path_halved_pairs,compressed_time,compressed_av_depth,compressed_pairs,\n");
+			writer.write("n,uncompressedtime,uncompressedavdepth,uncompressedpairs, pathhalvedtime,pathhalvedavdepth,pathhalvedpairs,compressedtime,compressedavdepth,compressedpairs,\n");
 
 			for(int i=0;i<N;i++) {
 				System.out.println(i);
