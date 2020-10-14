@@ -67,6 +67,18 @@ public class UF_HWQUPC implements UF {
             System.out.printf("%d: %d, %d\n", i, parent[i], height[i]);
         }
     }
+    
+    public double depthAverage() {
+    	double result = 0.0;
+    	for(int i =0;i<parent.length;i++) {
+    		int temp = i;
+    		while(parent[temp]!=temp) {
+    			result+=1;
+    			temp = parent[temp];
+    		}
+    	}
+    	return result/parent.length;
+    }
 
     /**
      * Returns the number of components.
@@ -88,12 +100,15 @@ public class UF_HWQUPC implements UF {
     	validate(p);
         int root = p;
         while (root != parent[root]) {
+        	if(pathCompression) {
+        		parent[root] = parent[parent[root]];
+        	}
             root = parent[root];
         }
         if (!pathCompression) {
             return root;
         }
-        doPathCompression(p, root, parent);
+        
         return root;
     }
 
@@ -199,11 +214,7 @@ public class UF_HWQUPC implements UF {
         // TO BE IMPLEMENTED update parent to value of grandparent
     	int root = find(i);
     	
-    	while (i != root) {
-            int temp = parent[i];
-            parent[i] = root;
-            i = temp;
-        }
+    	parent[root] = parent[parent[root]];
     }
     
     static void doPathCompression(int p, int root, int[] parent) {
@@ -217,25 +228,25 @@ public class UF_HWQUPC implements UF {
         }
     }
     
-    public static void main(String args[]) {
-
-    	try {
-			FileWriter writer = new FileWriter("resultsAssignment3/union_find/assignment3.csv");
-			writer.write("n,pairs\n");
-
-			for(int i=0;i<8;i++) {
-				System.out.println(i);
-				int t = (int)Math.pow(2, i);
-				t = t*5;
-				writer.write(t+",");
-				writer.write(count(t,2000)+"\n");
-			}
-			writer.close();
-    	}
-    	catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
+//    public static void main(String args[]) {
+//
+//    	try {
+//			FileWriter writer = new FileWriter("resultsAssignment4/union_find/assignment4.csv");
+//			writer.write("n,pairs\n");
+//
+//			for(int i=0;i<8;i++) {
+//				System.out.println(i);
+//				int t = (int)Math.pow(2, i);
+//				t = t*5;
+//				writer.write(t+",");
+//				writer.write(count(t,2000)+"\n");
+//			}
+//			writer.close();
+//    	}
+//    	catch (IOException e) {
+//    		e.printStackTrace();
+//    	}
+//    }
     
     private static int[] randomPair(int n) {
 		int[] ans = new int[2];
