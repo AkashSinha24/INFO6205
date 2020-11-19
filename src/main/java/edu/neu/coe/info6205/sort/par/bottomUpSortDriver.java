@@ -16,7 +16,7 @@ public class bottomUpSortDriver {
 		Random random = new Random();
 		
 		try {
-			FileWriter writer = new FileWriter("resultsAssignment5/parsort/data3.csv",false);
+			FileWriter writer = new FileWriter("resultsAssignment5/parsort/data4.csv",false);
 			writer.write("array_size,thread_count,cutoff,time_taken\n");
 
 			for(int size=MIN_ARRAY_SIZE;size<=MAX_ARRAY_SIZE;size*=2) {
